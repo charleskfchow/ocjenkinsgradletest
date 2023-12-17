@@ -1,0 +1,18 @@
+node('gradle') {
+    stage('Clone') {
+        sh "git config --global http.sslVerify false"
+        sh "https://github.com/charleskfchow/ocjenkinsgradletest.git"
+    }
+    stage('Clean') {
+        sh "gradle clean"
+    }
+    stage('Build') {
+        sh "gradle build"
+    }
+    stage('Deploy') {
+        sh "oc new-build --name DemoApplication --binary -n ocjenkinsgradletest --image-stream=ocjenkinsgradletest/openjdk-17:1.18 || true"
+        sh "oc start-build DemoApplication --from-file=build/libs/demo-0.0.1-SNAPSHOT.jar -n ocjenkinsgradletest --follow --wait"
+        sh "oc new-app DemoApplication || true"
+        sh "oc expose svc/DemoApplication || true"
+    }
+}
