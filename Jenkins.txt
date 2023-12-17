@@ -1,8 +1,4 @@
 node('gradle') {
-    stage('Clone') {
-        sh "git config --global http.sslVerify false"
-        sh "https://github.com/charleskfchow/ocjenkinsgradletest.git"
-    }
     stage('Clean') {
         sh "gradle clean"
     }
